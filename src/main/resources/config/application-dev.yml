@@ -9,7 +9,7 @@ spring:
     active: dev
     include:
       - swagger
-      - tls
+#      - tls
       # Uncomment to activate TLS for the dev profile
   devtools:
     restart:
@@ -35,7 +35,7 @@ spring:
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   r2dbc:
-    url: r2dbc:postgresql://10.53.122.138:5432/codecamp
+    url: r2dbc:postgresql://localhost:5432/codecamp
     username: postgres
     password: Asdf@1234
   thymeleaf:

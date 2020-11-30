@@ -30,8 +30,8 @@ spring:
   mail:
     host: localhost
     port: 25
-    username:
-    password:
+    username: postgres
+    password: 123456
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   r2dbc:

@@ -59,6 +59,31 @@ public class TransactionService {
                 });
     }
 
+    @Transactional
+    public Mono<Transaction> editTransaction(TransactionDTO transactionDTO) {
+        Transaction transaction = new Transaction();
+        transaction.setOwner(transactionDTO.getAccount());
+        transaction.setAction(1);
+        transaction.setAccount(transactionDTO.getAccount());
+        transaction.setToAccount(transactionDTO.getToAccount());
+        transaction.setAmount(transactionDTO.getAmount());
+        transaction.setCurrency(transactionDTO.getCurrency());
+        transaction.setTransactAt(LocalDateTime.now());
+        transaction.setResult(1);
+        transaction.setError("No error");
+        log.info("Edit data Transaction.");
+        return SecurityUtils.getCurrentUserLogin()
+                .switchIfEmpty(Mono.just(Constants.SYSTEM_ACCOUNT))
+                .flatMap(login -> {
+                    if (transaction.getCreatedBy() == null) {
+                        transaction.setCreatedBy(login);
+                    }
+                    transaction.setLastModifiedBy(login);
+                    return transactionRepository.save(transaction)
+                            .doOnSuccess(item -> publishTransactionEvent(TransactionEvent.ITEM_CREATED, item));
+                });
+    }
+
     @Transactional(readOnly = true)
     public Mono<Long> countTransactions() {
         return transactionRepository.countAll();

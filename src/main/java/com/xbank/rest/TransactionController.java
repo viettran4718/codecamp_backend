@@ -7,6 +7,8 @@ import com.xbank.security.AuthoritiesConstants;
 import com.xbank.service.TransactionService;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +34,7 @@ public class TransactionController {
 
     @Value("${clientApp.name}")
     private String applicationName;
-
+    private final Logger log = LoggerFactory.getLogger(TransactionController.class);
     private final TransactionService transactionService;
 
     public TransactionController(TransactionService transactionService) {
@@ -42,10 +44,25 @@ public class TransactionController {
     @PostMapping
 //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public Mono<ResponseEntity<Transaction>> createTransaction(@Valid @RequestBody TransactionDTO transactionDTO) {
+        log.debug("REST request to check if the current user is authenticated");
         return transactionService.createTransaction(transactionDTO).map(tran -> {
             try {
                 return ResponseEntity.created(new URI("/api/users/" + tran.getId()))
                         .headers(HeaderUtil.createAlert(applicationName, "TransactionManagement.created", String.valueOf(tran.getId())))
+                        .body(tran);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @PutMapping
+//    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public Mono<ResponseEntity<Transaction>> editTransaction(@Valid @RequestBody TransactionDTO transactionDTO) {
+        return transactionService.editTransaction(transactionDTO).map(tran -> {
+            try {
+                return ResponseEntity.created(new URI("/api/users/" + tran.getId()))
+                        .headers(HeaderUtil.createAlert(applicationName, "TransactionManagement.edit", String.valueOf(tran.getId())))
                         .body(tran);
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);

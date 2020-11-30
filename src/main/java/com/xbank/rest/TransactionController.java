@@ -58,7 +58,7 @@ public class TransactionController {
 
     @PutMapping
 //    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public Mono<ResponseEntity<Transaction>> editTransaction(@Valid @RequestBody TransactionDTO transactionDTO) {
+    public Mono<ResponseEntity<Transaction>> editTransaction(@Valid @RequestBody Transaction transactionDTO) {
         return transactionService.editTransaction(transactionDTO).map(tran -> {
             try {
                 return ResponseEntity.created(new URI("/api/users/" + tran.getId()))

@@ -9,7 +9,7 @@ spring:
     active: dev
     include:
       - swagger
-      - tls
+#      - tls
       # Uncomment to activate TLS for the dev profile
   devtools:
     restart:
@@ -26,7 +26,7 @@ spring:
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker
-    url: jdbc:postgresql://localhost:5432/xbank
+    url: jdbc:postgresql://localhost:5432/codecamp
   mail:
     host: localhost
     port: 25
@@ -35,9 +35,9 @@ spring:
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/xbank
+    url: r2dbc:postgresql://localhost:5432/codecamp
     username: postgres
-    password: 123456
+    password: Asdf@1234
   thymeleaf:
     cache: false
   security:
@@ -47,7 +47,7 @@ spring:
           issuer-uri: http://localhost:8080/auth/realms/microservice
 
 server:
-  port: 8081
+  port: 8084
 
 # ===================================================================
 jhipster:

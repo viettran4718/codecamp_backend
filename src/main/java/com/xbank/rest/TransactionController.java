@@ -1,5 +1,6 @@
 package com.xbank.rest;
 
+import com.xbank.config.Constants;
 import com.xbank.domain.Transaction;
 import com.xbank.dto.TransactionDTO;
 import com.xbank.dto.UserDTO;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,6 +72,14 @@ public class TransactionController {
         });
     }
 
+    @DeleteMapping("/{id:" + Constants.ID_REGEX + "}")
+//    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Mono<ResponseEntity<Void>> deleteTransaction(@PathVariable long id) {
+        log.debug("REST request to delete Transaction: {}", id);
+        return transactionService.deleteTransaction(id)
+                .map(it -> ResponseEntity.noContent().headers(HeaderUtil.createAlert( applicationName, "deleteTransaction.deleted", String.valueOf(id))).build());
+    }
     /**
      * {@code GET /transactions} : get all transactions.
      *

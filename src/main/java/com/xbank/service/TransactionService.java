@@ -88,6 +88,14 @@ public class TransactionService {
                 });
     }
 
+    @Transactional
+    public Mono<Void> deleteTransaction(long id) {
+        return transactionRepository.findById(id)
+                .flatMap(transaction -> transactionRepository.delete(transaction).thenReturn(transaction))
+                .doOnNext(transaction -> log.debug("Deleted transaction: {}", transaction))
+                .then();
+    }
+
     @Transactional(readOnly = true)
     public Mono<Long> countTransactions() {
         return transactionRepository.countAll();
